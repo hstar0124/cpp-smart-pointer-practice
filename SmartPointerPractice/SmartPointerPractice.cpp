@@ -133,6 +133,28 @@ void Test(KnightRef& knight)
 	
 }
 
+class Archer : public enable_shared_from_this<Archer>
+{
+public:
+	void Test()
+	{
+		// Move(this);		// 스마트포인터 사용시 내 자신을 어떻게 넘겨줘야하는가?
+		// shared_ptr<Archer> a = shared_ptr<Archer>(this);
+		// 위 방식으로하면 스마트포인터가 새로 생성이 되서 RefCount가 2개가 각각 1씩 관리가 되고
+		// 둘 중에 하나라도 Release가 된다면 자폭하게 되어 다른 스마트포인토에서도 접근이 불가능하다.
+
+		// 자신을 넘기기 위해서는 Class 에
+		// public enable_shared_from_this<Archer> 을 명시하고
+		// 아래 메소드를 호출하면 된다.
+		Move(shared_from_this());
+	}
+
+	void Move(shared_ptr<Archer> a)
+	{
+
+	}
+};
+
 
 int main()
 {
@@ -148,4 +170,6 @@ int main()
 
 	Test(knight);
 
+	shared_ptr<Archer> a(new Archer());
+	a->Test();
 }
